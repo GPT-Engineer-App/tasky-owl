@@ -15,6 +15,12 @@ const Index = () => {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      addTodo();
+    }
+  };
+
   const toggleTodo = (id) => {
     setTodos(todos.map(todo =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -34,6 +40,7 @@ const Index = () => {
             type="text"
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Add a new todo"
             className="flex-grow mr-2"
           />
