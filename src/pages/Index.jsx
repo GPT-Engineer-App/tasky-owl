@@ -1,49 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Plus, CheckCircle2, ListTodo, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TodoList from '../components/TodoList';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getTodos, addTodo, updateTodo, deleteTodo } from '../lib/db';
 
 const Index = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState('');
   const [activeTab, setActiveTab] = useState('personal');
 
-  useEffect(() => {
-    const loadTodos = async () => {
-      const loadedTodos = await getTodos();
-      setTodos(loadedTodos);
-    };
-    loadTodos();
-  }, []);
-
-  const handleAddTodo = async () => {
+  const addTodo = () => {
     if (newTodo.trim() !== '') {
-      const todo = { text: newTodo, completed: false, category: activeTab };
-      const id = await addTodo(todo);
-      setTodos([...todos, { ...todo, id }]);
+      setTodos([...todos, { id: Date.now(), text: newTodo, completed: false, category: activeTab }]);
       setNewTodo('');
     }
   };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      handleAddTodo();
+      addTodo();
     }
   };
 
-  const handleToggleTodo = async (id) => {
-    const todo = todos.find(t => t.id === id);
-    const updatedTodo = { ...todo, completed: !todo.completed };
-    await updateTodo(updatedTodo);
-    setTodos(todos.map(t => t.id === id ? updatedTodo : t));
+  const toggleTodo = (id) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
   };
 
-  const handleDeleteTodo = async (id) => {
-    await deleteTodo(id);
+  const deleteTodo = (id) => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
@@ -82,12 +69,12 @@ const Index = () => {
                     placeholder={`Add a new ${tab} todo`}
                     className="flex-grow mr-2"
                   />
-                  <Button onClick={handleAddTodo} className="bg-blue-500 hover:bg-blue-600">
+                  <Button onClick={addTodo} className="bg-blue-500 hover:bg-blue-600">
                     <Plus className="h-4 w-4 mr-2" />
                     Add
                   </Button>
                 </div>
-                <TodoList todos={filteredTodos} toggleTodo={handleToggleTodo} deleteTodo={handleDeleteTodo} />
+                <TodoList todos={filteredTodos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
               </TabsContent>
             ))}
           </Tabs>
