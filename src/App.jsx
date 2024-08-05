@@ -1,3 +1,4 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,20 +9,22 @@ import { DirectionProvider } from '@radix-ui/react-direction';
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <DirectionProvider>
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-        <Routes>
-          {navItems.map(({ to, page }) => (
-            <Route key={to} path={to} element={page} />
-          ))}
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-    </DirectionProvider>
-  </QueryClientProvider>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <DirectionProvider>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <Routes>
+              {navItems.map(({ to, page }) => (
+                <Route key={to} path={to} element={page} />
+              ))}
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </DirectionProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 export default App;
